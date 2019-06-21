@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+	<title>Audio Player</title>
+	<style>
+		*,
+		*:after,
+		*:before {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			outline: none;
+		}
+
+		*:focus {
+			outline: none;
+		}
+
+		body {
+			background-color: whitesmoke;
+			height: 100vh;
+			font: 12px "Lato"
+		}
+
+		.container {
+			display: flex;
+			height: 100vh;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+</head>
+
+<body>
+
+	<button onClick="change('test1.mp3')" title="Vivaldi">Vivaldi Sonata</button>
+	<button onClick="change('test2.mp3')" title="Vivaldi">Hayden Cello Concerto</button>
+	<div class="container">
+		<audio-player mute="false" source="test1.mp3" />
+
+	</div>
+
+	<script src="audio-player.js"></script>
+	<script>
+		function change(music) {
+			const audio = document.querySelector("audio-player")
+			audio.setAttribute("source", music)
+		}
+
+	</script>
+</body>
+
+</html>

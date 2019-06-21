@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="8px" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_skip_previous_24px</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ic_skip_previous_24px" transform="translate(-4.000000, -4.000000)">
+            <path d="M4,4 L5.33333333,4 L5.33333333,12 L4,12 L4,4 Z M6.33333333,8 L12,12 L12,4 L6.33333333,8 Z" id="Shape" fill="#131313"></path>
+            <polygon id="Shape" points="0 0 16 0 16 16 0 16"></polygon>
+        </g>
+    </g>
+</svg>
