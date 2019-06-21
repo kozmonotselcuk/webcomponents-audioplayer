@@ -1,0 +1,32 @@
+{
+	"name": "mp3player",
+	"version": "1.0.0",
+	"description": "simple audio player create by web components",
+	"main": "audio-player.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kozmonotselcuk/webcomponents-audioplayer.git"
+	},
+	"author": "kozmonotselcuk",
+	"contributors": [
+		{
+			"name": "selcuk sarikoz",
+			"email": "benimpostahesabim@gmail.com"
+		}
+	],
+	"keywords": [
+		"web components",
+		"custom elements",
+		"audio player",
+		"player",
+		"audio"
+	],
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/kozmonotselcuk/webcomponents-audioplayer/issues"
+	},
+	"homepage": "https://github.com/kozmonotselcuk/webcomponents-audioplayer#readme"
+}
