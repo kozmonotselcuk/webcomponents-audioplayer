@@ -38,19 +38,18 @@
 
 <body>
 
-	<button onClick="change('test1.mp3')" title="Vivaldi">Vivaldi Sonata</button>
-	<button onClick="change('test2.mp3')" title="Vivaldi">Hayden Cello Concerto</button>
 	<div class="container">
-		<audio-player mute="false" source="test1.mp3" />
+		<audio-player mute="false" source=""
+			list="demo/test1.mp3, demo/test2.mp3,demo/test1.mp3, demo/test2.mp3,demo/test1.mp3, demo/test2.mp3,demo/test1.mp3, demo/test2.mp3,demo/test1.mp3, demo/test2.mp3,demo/test1.mp3, demo/test2.mp3" />
 
 	</div>
 
-	<script src="audio-player.js"></script>
+	<script src="src/audio-player.js"></script>
 	<script>
-		function change(music) {
+
+		(function () {
 			const audio = document.querySelector("audio-player")
-			audio.setAttribute("source", music)
-		}
+		})()
 
 	</script>
 </body>

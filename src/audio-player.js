@@ -11,8 +11,8 @@ class AudioPlayer extends HTMLElement {
 			poster: null
 		}
 		this.src = null
-		this.progress = null;
-		this.player = null;
+		this.progress = null
+		this.player = null
 	}
 
 	connectedCallback() {
@@ -21,7 +21,7 @@ class AudioPlayer extends HTMLElement {
 				:host {
 					all: initial;
 				}
-				.audio-container {
+				.audio-wrapper, .audio-container {
 					background: white;
 					width:400px;
 					height:90px;
@@ -31,6 +31,11 @@ class AudioPlayer extends HTMLElement {
 					display:flex;
 					justify-content:flex-start;
 				}
+
+				.audio-container {
+					z-index:2;
+				}
+
 				.button__container {
 					display:flex;
 					align-items:center;
@@ -50,54 +55,105 @@ class AudioPlayer extends HTMLElement {
 					transition: background-color .2s ease;
 				}
 			</style>
-			<div class="audio-container">
+			<div class="audio-wrapper">
 
-				${this.getRecordPreview()}
 				${this.getPlayerStatus()}
+				${this.getPlaylist()}
 
-				<div class="button__container">
-					<img class="media-buttons previous" src="icons/skip_previous.svg" alt="skip previous"/>
-					<img class="media-buttons play" src="icons/play-button.svg" alt="play/pause"/>
-					<img class="media-buttons next" src="icons/skip_next.svg" alt="skip next"/>
+				<div class="audio-container">
+
+					${this.getRecordPreview()}
+		
+					<div class="button__container">
+						<img class="media-buttons previous" src="icons/skip_previous.svg" alt="skip previous"/>
+						<img class="media-buttons play" src="icons/play-button.svg" alt="play/pause"/>
+						<img class="media-buttons next" src="icons/skip_next.svg" alt="skip next"/>
+						<img class="media-buttons list" src="icons/list.svg" alt="playlist"/>
+					</div>
+
+					<audio 
+						style="display:none";
+						class="audio-player" 
+						preload="auto"
+						src=${this.config.src}
+					/>
 				</div>
-
-				<audio 
-					style="display:none";
-					class="audio-player" 
-					src=${this.config.src}
-				/>
 			</div>
 		`
 		this.shadow.innerHTML = template
 		this.player = this.shadow.querySelector(".audio-player")
+		this.getPlayListItem()
 
 		this.registerEvents();
 	}
 
 	get source() {
-		return this.source
+		return this.getAttribute("source")
 	}
 
 	set source(val) {
 		this.setAttribute("source", val)
 	}
 
+	get list() {
+		return this.getAttribute("list")
+	}
+
+	set list(list) {
+		this.hasAttribute("list")
+	}
+
 	static get observedAttributes() {
-		return ["source", "mute", "play"]
+		return ["source", "mute", "play", "list"]
 	}
 
 	disconnectedCallback() {
 		this.shadow.querySelector(".play").removeEventListener("click", this.togglePlay.bind(this))
 		this.shadow.querySelector(".audio-player").removeEventListener("timeupdate", this.timeupdate.bind(this))
+		this.shadow.querySelector(".audio-player").removeEventListener("ended", this.ended.bind(this))
+		this.playListBtn.removeEventListener("click", this.openPlayList.bind(this))
 		this.progressSeek.removeEventListener("click", this.seekToTime.bind(this))
+		this.shadow.querySelector(".audio__list").removeEventListener("click", this.setPlayingItem.bind(this))
 	}
 
 	registerEvents() {
 		this.shadow.querySelector(".play").addEventListener("click", this.togglePlay.bind(this))
 		this.shadow.querySelector(".audio-player").addEventListener("timeupdate", this.timeupdate.bind(this))
+		this.shadow.querySelector(".audio-player").addEventListener("ended", this.ended.bind(this))
 		this.progressBar = this.shadow.querySelector(".progress-bar__width")
 		this.progressSeek = this.shadow.querySelector(".progress-bar")
+
+		this.playListBtn = this.shadow.querySelector(".list")
+		this.playListBtn.addEventListener("click", this.openPlayList.bind(this))
+
 		this.progressSeek.addEventListener("click", this.seekToTime.bind(this))
+
+		this.shadow.querySelector(".audio__list").addEventListener("click", this.setPlayingItem.bind(this))
+
+		if (this.source == "") {
+			const l = this.getListItems();
+			this.source = l[0]
+		}
+	}
+
+	setPlayingItem(item) {
+		this.source = item.target.getAttribute("source")
+		this.player.load()
+		this.player.play()
+	}
+
+	openPlayList() {
+		const playlist = this.shadow.querySelector(".playlist")
+		if (playlist.classList.contains("open")) {
+			playlist.classList.remove("open")
+		} else {
+			playlist.classList.add("open")
+		}
+	}
+
+	ended() {
+		this.player.pause()
+		this.setAttribute("play", false)
 	}
 
 	timeupdate(event) {
@@ -105,16 +161,20 @@ class AudioPlayer extends HTMLElement {
 	}
 
 	seekToTime(x) {
-		console.log(x)
+		const percent = x.offsetX / this.progressSeek.clientWidth
+
+		this.player.currentTime = percent * this.player.duration
 	}
 
 	togglePlay() {
-		if (this.player.paused) {
-			this.player.play()
-			this.setAttribute("play", true)
-		} else {
-			this.player.pause()
-			this.setAttribute("play", false)
+		if (this.source !== "" && this.player.readyState !== 0) {
+			if (this.player.paused) {
+				this.player.play()
+				this.setAttribute("play", true)
+			} else {
+				this.player.pause()
+				this.setAttribute("play", false)
+			}
 		}
 	}
 
@@ -188,7 +248,7 @@ class AudioPlayer extends HTMLElement {
 					background: rgba(255,255,255, 0.5);
 					width: 95%;
 					position: absolute;
-					z-index: -1;
+					z-index: 1;
 					transition: transform .5s ease-in-out;
 					transform: translateY(0%) scale(0.8);
 					border-radius: 10px;
@@ -218,9 +278,9 @@ class AudioPlayer extends HTMLElement {
 					left:0px;
 					top:0;
 					bottom:0px;
-					transition: width .2s linear;
+					transition: width .1s linear;
 					border-radius:5px;
-					width:50px;
+					width:0px;
 					background-color:red;
 				}
 			</style>
@@ -235,8 +295,78 @@ class AudioPlayer extends HTMLElement {
 		return template
 	}
 
+	getPlaylist() {
+		const template = `
+			<style>
+				.playlist {
+					height: 90px;
+					background: rgba(255,255,255, 0.5);
+					width: 95%;
+					height:0;
+					position: absolute;
+					z-index: 1;
+					transition: all .5s ease-in-out;
+					transform: translateY(0px);
+					border-radius: 10px;
+					margin: auto;
+					left: 0px;
+					right: 0px;
+					bottom:5px;
+					opacity:0;
+					box-sizing:border-box;
+					padding: 20px 10px;
+					overflow-y: auto;
+				}
+				.playlist.open {
+					transition: all .5s ease-in-out;
+					transform: translateY(100%);
+					height:250px;
+					opacity:1;
+				}
+				.audio__item {
+					padding:10px;
+					margin-bottom:10px;
+					transition: background-color .2s ease-in;
+					font-size:14px;
+					border-radius:10px;
+				}
+				.audio__item div.active {
+
+				}
+				.audio__item:hover {
+					transition: background-color .2s ease-in;
+					background-color:whitesmoke;
+					color:#252525;
+					cursor:pointer;
+					border-radius:10px;
+				}
+			</style>
+			<div class="playlist">
+
+			</div>
+		`
+		return template
+	}
+
+	getListItems() {
+		return this.list.split(",")
+	}
+
+	getPlayListItem() {
+		const div = document.createElement("div")
+		div.classList.add("audio__list")
+		for (const item of this.getListItems()) {
+			const d = document.createElement("div")
+			d.setAttribute("source", item.trim())
+			d.classList.add("audio__item")
+			d.innerText = item
+			div.appendChild(d)
+		}
+
+		this.shadow.querySelector(".playlist").appendChild(div)
+	}
+
 	attributeChangedCallback(name, oldValue, newValue) {
-		console.log(name, newValue)
 		const playPause = this.shadow.querySelector(".play")
 		const audioRecord = this.shadow.querySelector(".audio__record")
 		const recordWrapper = this.shadow.querySelector(".record__wrapper")
@@ -250,6 +380,10 @@ class AudioPlayer extends HTMLElement {
 					this.player.load()
 					this.togglePlay()
 				}
+				break
+
+			case "list":
+				this.list = Array.from(newValue.split(","))
 				break
 
 			case "play":

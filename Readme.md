@@ -3,20 +3,20 @@
 
 <center>
 
-![Watch the video](ss.gif)
+![Watch the video](screenshots/ss.gif)
 
 </center>
 
 
 add this code in body
 ```
-<script src="audio-player.js"></script>
+<script src="src/audio-player.js"></script>
 ```
 
 and 
 
 ```
-<audio-player mute="false" source="test1.mp3" />
+<audio-player mute="false" source="demo/test1.mp3" />
 ```
 
 ### Future list
