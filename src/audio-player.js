@@ -140,6 +140,7 @@ class AudioPlayer extends HTMLElement {
 		this.source = item.target.getAttribute("source")
 		this.player.load()
 		this.player.play()
+		this.setAttribute("play", true)
 	}
 
 	openPlayList() {
